@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh" data-theme="akane">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能科学计算器</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mathjs@12.4.2/lib/browser/math.min.js"></script>
+
+    <style>
+        /* --- 1. MD3 基础与主题系统 --- */
+        :root {
+            /* 默认主题: 茜 (Akane) */
+            --md-sys-color-primary: #B22C46;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-secondary: #D96B7E;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-tertiary: #A9A9A9;
+            --md-sys-color-on-tertiary: #000000;
+            --md-sys-color-surface: #3A0E17;
+            --md-sys-color-on-surface: #EAEAEA;
+            --md-sys-color-surface-variant: #5C1F2A;
+            --md-sys-color-on-surface-variant: #CCCCCC;
+            --md-sys-color-background: #280a10;
+            --md-sys-color-on-background: #FFFFFF;
+            --md-sys-color-outline: #8C4753;
+
+            --font-family: 'Roboto', 'Noto Sans SC', sans-serif;
+            --transition-speed-fast: 0.2s;
+            --transition-speed-normal: 0.3s;
+            --border-radius-lg: 1.5rem; /* 24px */
+            --border-radius-md: 1rem;   /* 16px */
+        }
+
+        /* 主题定义 */
+        [data-theme="sumi"] { --md-sys-color-primary: #4A4A4A; --md-sys-color-on-primary: #FFFFFF; --md-sys-color-secondary: #848484; --md-sys-color-on-secondary: #FFFFFF; --md-sys-color-surface: #1C1C1C; --md-sys-color-background: #121212; --md-sys-color-surface-variant: #2C2C2C; --md-sys-color-outline: #5A5A5A; }
+        [data-theme="sakura"] { --md-sys-color-primary: #FECEDC; --md-sys-color-on-primary: #3E2E34; --md-sys-color-secondary: #F5A8BE; --md-sys-color-on-secondary: #3E2E34; --md-sys-color-surface: #3E2E34; --md-sys-color-background: #2b2024; --md-sys-color-surface-variant: #58444A; --md-sys-color-outline: #a58992; }
+        [data-theme="matcha"] { --md-sys-color-primary: #96B1A0; --md-sys-color-on-primary: #2E3832; --md-sys-color-secondary: #C8D5CB; --md-sys-color-on-secondary: #2E3832; --md-sys-color-surface: #2E3832; --md-sys-color-background: #202723; --md-sys-color-surface-variant: #44544A; --md-sys-color-outline: #7a8f82; }
+        [data-theme="ai"] { --md-sys-color-primary: #264D70; --md-sys-color-on-primary: #FFFFFF; --md-sys-color-secondary: #5A82A6; --md-sys-color-on-secondary: #FFFFFF; --md-sys-color-surface: #102231; --md-sys-color-background: #0a1620; --md-sys-color-surface-variant: #1c3850; --md-sys-color-outline: #42698a; }
+        [data-theme="yamabuki"] { --md-sys-color-primary: #FCA500; --md-sys-color-on-primary: #3D2D00; --md-sys-color-secondary: #FFC14D; --md-sys-color-on-secondary: #3D2D00; --md-sys-color-surface: #3D2D00; --md-sys-color-background: #2a2000; --md-sys-color-surface-variant: #574100; --md-sys-color-outline: #b17a00; }
+        [data-theme="fuji"] { --md-sys-color-primary: #A290C4; --md-sys-color-on-primary: #2C2635; --md-sys-color-secondary: #C5B8DE; --md-sys-color-on-secondary: #2C2635; --md-sys-color-surface: #322C3E; --md-sys-color-background: #231f2a; --md-sys-color-surface-variant: #4a4258; --md-sys-color-outline: #80709f; }
+        [data-theme="akane"] { --md-sys-color-primary: #B22C46; --md-sys-color-on-primary: #FFFFFF; --md-sys-color-secondary: #D96B7E; --md-sys-color-on-secondary: #FFFFFF; --md-sys-color-surface: #3A0E17; --md-sys-color-background: #280a10; --md-sys-color-surface-variant: #5C1F2A; --md-sys-color-outline: #8C4753; }
+        [data-theme="wakatake"] { --md-sys-color-primary: #7BC5A3; --md-sys-color-on-primary: #243C31; --md-sys-color-secondary: #A8DBC1; --md-sys-color-on-secondary: #243C31; --md-sys-color-surface: #243C31; --md-sys-color-background: #192a22; --md-sys-color-surface-variant: #3a5c4a; --md-sys-color-outline: #629e82; }
+        [data-theme="kin"] { --md-sys-color-primary: #D4AF37; --md-sys-color-on-primary: #413510; --md-sys-color-secondary: #EACD6F; --md-sys-color-on-secondary: #413510; --md-sys-color-surface: #413510; --md-sys-color-background: #2d240b; --md-sys-color-surface-variant: #5d4b17; --md-sys-color-outline: #a4872b; }
+        [data-theme="gin"] { --md-sys-color-primary: #C0C0C0; --md-sys-color-on-primary: #3C3C3C; --md-sys-color-secondary: #E0E0E0; --md-sys-color-on-secondary: #3C3C3C; --md-sys-color-surface: #3C3C3C; --md-sys-color-background: #292929; --md-sys-color-surface-variant: #565656; --md-sys-color-outline: #989898; }
+
+        /* --- 2. 基础布局与样式 --- */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            transition: background-color var(--transition-speed-normal) ease;
+        }
+        .calculator {
+            width: 100%;
+            max-width: 380px;
+            background-color: var(--md-sys-color-surface);
+            padding: 1rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 8px 32px -8px rgba(0,0,0,0.3);
+            transition: background-color var(--transition-speed-normal) ease;
+        }
+        
+        /* --- 3. 顶部栏 --- */
+        .calculator-header { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.5rem 1.5rem 0.5rem; color: var(--md-sys-color-on-surface); }
+        .header-title { font-size: 1.2rem; font-weight: 700; }
+        .header-icons { display: flex; align-items: center; gap: 1rem; }
+        .icon-btn { background: none; border: none; cursor: pointer; color: var(--md-sys-color-on-surface-variant); padding: 0.25rem; transition: color var(--transition-speed-fast) ease; line-height: 0; }
+        .icon-btn:hover { color: var(--md-sys-color-primary); }
+        .icon-btn svg { width: 24px; height: 24px; }
+        
+        /* --- 4. 显示屏 --- */
+        .display { background-color: rgba(0,0,0,0.2); border-radius: var(--border-radius-md); padding: 1.5rem 1rem; text-align: right; margin-bottom: 1rem; min-height: 120px; display: flex; flex-direction: column; justify-content: flex-end; }
+        #display-expression { font-size: 1.2rem; color: var(--md-sys-color-on-surface-variant); word-break: break-all; min-height: 1.5rem; }
+        #display-input { font-size: 3rem; font-weight: 500; color: var(--md-sys-color-on-surface); word-break: break-all; transition: color 0.4s ease, transform 0.4s ease; }
+        @keyframes highlight-result { 0% { color: var(--md-sys-color-primary); transform: scale(1.05); } 100% { color: var(--md-sys-color-on-surface); transform: scale(1); } }
+        .highlight { animation: highlight-result 0.4s ease-out; }
+
+        /* --- 5. 按钮 --- */
+        .buttons-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(5, 1fr); }
+        .btn { height: 56px; border-radius: var(--border-radius-md); border: none; cursor: pointer; transition: all var(--transition-speed-fast) ease; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0.25rem; line-height: 1.2; }
+        .btn:active { transform: scale(0.95); }
+        .btn-symbol { font-size: 1.5rem; font-weight: 500; }
+        .btn-label { font-size: 0.7rem; color: var(--md-sys-color-on-surface-variant); }
+        .btn.btn-number .btn-symbol, .btn.btn-operator .btn-symbol, .btn.btn-tertiary .btn-symbol { font-size: 1.8rem; }
+        .btn.btn-secondary .btn-label { color: var(--md-sys-color-on-secondary); opacity: 0.8; }
+        .btn.btn-operator .btn-label { color: var(--md-sys-color-on-primary); opacity: 0.8; }
+        .btn.btn-number { background-color: var(--md-sys-color-surface-variant); color: var(--md-sys-color-on-surface-variant); }
+        .btn.btn-operator { background-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+        .btn.btn-tertiary { background-color: var(--md-sys-color-tertiary); color: var(--md-sys-color-on-tertiary); }
+        .btn.btn-secondary { background-color: var(--md-sys-color-secondary); color: var(--md-sys-color-on-secondary); }
+        .btn.span-2 { grid-column: span 2; }
+        #solve-steps-btn .btn-symbol { font-size: 1.2rem; font-weight: 700; }
+
+        /* --- 6. 模态框 --- */
+        .modal { position: fixed; inset: 0; background-color: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; padding: 1rem; opacity: 0; visibility: hidden; transition: opacity var(--transition-speed-normal) ease; z-index: 1000; }
+        .modal.visible { opacity: 1; visibility: visible; }
+        .modal-content { background-color: var(--md-sys-color-surface); padding: 2rem; border-radius: var(--border-radius-lg); max-width: 500px; width: 100%; position: relative; transform: scale(0.95); opacity: 0; transition: all var(--transition-speed-normal) cubic-bezier(0.4, 0, 0.2, 1); }
+        .modal.visible .modal-content { transform: scale(1); opacity: 1; }
+        .modal-close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--md-sys-color-on-surface-variant); font-size: 1.5rem; cursor: pointer; }
+        .modal-title { font-size: 1.5rem; font-weight: 700; color: var(--md-sys-color-primary); margin-bottom: 1.5rem; }
+        .modal-body { max-height: 60vh; overflow-y: auto; line-height: 1.6; color: var(--md-sys-color-on-surface); }
+        .ai-menu, .life-calc-menu { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+        .ai-menu-btn, .life-calc-btn { padding: 1rem; font-size: 1rem; font-weight: 700; border: none; border-radius: var(--border-radius-md); background-color: var(--md-sys-color-surface-variant); color: var(--md-sys-color-on-surface-variant); cursor: pointer; transition: all var(--transition-speed-fast) ease; text-align: left; display: flex; align-items: center; gap: 0.75rem;}
+        .ai-menu-btn:hover, .life-calc-btn:hover { background-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+        #history-modal-body { display: flex; flex-direction: column-reverse; gap: 1rem; padding-right: 0.5rem; }
+        #history-modal-body::-webkit-scrollbar { width: 4px; }
+        #history-modal-body::-webkit-scrollbar-track { background: transparent; }
+        #history-modal-body::-webkit-scrollbar-thumb { background: var(--md-sys-color-outline); border-radius: 2px; }
+        .history-item .expression { font-size: 0.9rem; color: var(--md-sys-color-on-surface-variant); word-break: break-all; }
+        .history-item .result { font-size: 1.2rem; font-weight: 500; color: var(--md-sys-color-on-surface); }
+        #word-problem-textarea { width: 100%; min-height: 100px; background-color: var(--md-sys-color-surface-variant); border: 1px solid var(--md-sys-color-outline); border-radius: var(--border-radius-md); padding: 0.75rem; color: var(--md-sys-color-on-surface); font-family: inherit; margin-bottom: 1rem; }
+        
+        /* --- 7. 设置与生活计算器样式 --- */
+        .settings-section, .calc-section { margin-bottom: 2rem; }
+        .settings-section:last-child, .calc-section:last-child { margin-bottom: 0; }
+        .settings-title, .calc-title { font-size: 1rem; font-weight: 700; color: var(--md-sys-color-on-surface-variant); margin-bottom: 1rem; border-bottom: 1px solid var(--md-sys-color-outline); padding-bottom: 0.5rem; }
+        #theme-palette-container, .language-options { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+        .theme-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; cursor: pointer; }
+        .theme-color-circle { width: 48px; height: 48px; border-radius: 50%; border: 3px solid transparent; transition: all var(--transition-speed-fast) ease; }
+        .theme-item.active .theme-color-circle { border-color: var(--md-sys-color-primary); transform: scale(1.1); }
+        .theme-name { font-size: 0.8rem; color: var(--md-sys-color-on-surface-variant); }
+        .lang-btn { background-color: var(--md-sys-color-surface-variant); color: var(--md-sys-color-on-surface-variant); border: 2px solid transparent; border-radius: var(--border-radius-md); padding: 0.75rem; cursor: pointer; transition: all var(--transition-speed-fast) ease; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25rem; }
+        .lang-btn:hover { border-color: var(--md-sys-color-outline); }
+        .lang-btn.active { border-color: var(--md-sys-color-primary); background-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+        .lang-btn .flag { font-size: 1.5rem; line-height: 1; }
+        .lang-btn .name { font-size: 0.8rem; font-weight: 500; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem; background-color: var(--md-sys-color-surface-variant); border: 1px solid var(--md-sys-color-outline); border-radius: var(--border-radius-md); color: var(--md-sys-color-on-surface); font-family: inherit; font-size: 1rem; }
+        .calc-result { margin-top: 1.5rem; padding: 1rem; background-color: rgba(0,0,0,0.2); border-radius: var(--border-radius-md); text-align: center; }
+        .calc-result .label { font-size: 0.9rem; color: var(--md-sys-color-on-surface-variant); }
+        .calc-result .value { font-size: 1.8rem; font-weight: 700; color: var(--md-sys-color-primary); }
+        .primary-btn { width: 100%; padding: 0.75rem; background-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border: none; border-radius: var(--border-radius-md); cursor: pointer; font-weight: 700; font-size: 1rem; }
+        
+        /* --- 8. 汇率换算器新样式 --- */
+        .exchange-rate-ui { display: flex; flex-direction: column; gap: 1.5rem; }
+        .currency-selection { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+        .currency-box { flex: 1; text-align: center; }
+        .currency-box .label { margin-bottom: 0.75rem; font-weight: 500; }
+        .currency-button { width: 100%; padding: 0.75rem; border: 2px solid var(--md-sys-color-outline); border-radius: var(--border-radius-md); background: none; color: var(--md-sys-color-on-surface); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 1rem; }
+        .currency-button:hover { background-color: var(--md-sys-color-surface-variant); }
+        .currency-button .flag { font-size: 1.5rem; }
+        #swap-currency-btn { padding: 0.75rem; line-height: 0; background-color: var(--md-sys-color-tertiary); color: var(--md-sys-color-on-tertiary); border: none; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
+        .currency-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+        .currency-grid-btn { padding: 0.5rem; background-color: var(--md-sys-color-surface-variant); border: 2px solid transparent; border-radius: var(--border-radius-md); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+        .currency-grid-btn:hover { border-color: var(--md-sys-color-outline); }
+        .currency-grid-btn.selected { border-color: var(--md-sys-color-primary); }
+        .currency-grid-btn .flag { font-size: 1.2rem; }
+        .currency-grid-btn .code { font-size: 0.8rem; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <div class="calculator" id="calculator">
+        <!-- 顶部栏 -->
+        <div class="calculator-header">
+            <h1 class="header-title" data-i18n="headerTitle">智能科学计算器</h1>
+            <div class="header-icons">
+                <button class="icon-btn" id="ai-btn" data-i18n-title="aiBtnTitle" title="AI 功能">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25a.75.75 0 0 1 .75.75v2.51a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm4.5-5.25a.75.75 0 0 0-1.5 0v2.51a.75.75 0 0 0 1.5 0V6.75ZM18.682 6.318a.75.75 0 0 0-1.06-1.06l-1.768 1.768a.75.75 0 1 0 1.06 1.06l1.768-1.768ZM6.382 18.618a.75.75 0 0 0 1.06 1.06l1.768-1.768a.75.75 0 0 0-1.06-1.06l-1.768 1.768ZM12 21.75a.75.75 0 0 0 0-1.5v-2.51a.75.75 0 0 0-1.5 0v2.51a.75.75 0 0 0 1.5 0ZM3.515 13.5a.75.75 0 0 0-1.5 0H.75a.75.75 0 0 0 0 1.5h2.265a.75.75 0 0 0 1.5 0h-2.265ZM23.25 12.75a.75.75 0 0 0 0-1.5h-2.265a.75.75 0 0 0-1.5 0h2.265a.75.75 0 0 0 1.5 0ZM6.382 5.382a.75.75 0 0 0-1.06 1.06L7.09 8.21a.75.75 0 0 0 1.06-1.06L6.382 5.382ZM18.682 17.682a.75.75 0 0 0-1.06 1.06l1.768 1.768a.75.75 0 0 0 1.06-1.06l-1.768-1.768Z"/></svg>
+                </button>
+                <button class="icon-btn" id="settings-btn" data-i18n-title="settingsBtnTitle" title="设置">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 5.85c-.09.55-.552.95-1.11.95H4.847c-.917 0-1.699.663-1.85 1.567L2.828 9.48c-.09.55.242 1.05.748 1.285l2.108.843c.441.176.748.578.748 1.05v1.82c0 .917.663 1.699 1.567 1.85l2.123.17c.55.04.95.502.95 1.06v3.103c0 .917.663 1.699 1.567 1.85L12.922 21.15c.55.09.95-.242 1.05-.748l.17-2.123c.04-.55.502-.95 1.06-.95h3.103c.917 0 1.699-.663 1.85-1.567l.17-2.123c.09-.55-.242-1.05-.748-1.285l-2.108-.843c-.441-.176-.748-.578-.748-1.05v-1.82c0-.917-.663-1.699-1.567-1.85l-2.123-.17c-.55-.04-.95-.502-.95-1.06V3.817c0-.917-.663-1.699-1.567-1.85L12.922 1.8c-.55-.09-.95.242-1.05.748l-.17 2.123c-.04.55-.502.95-1.06.95H7.547c-.917 0-1.699.663-1.85 1.567L5.528 9.48c-.09.55.242 1.05.748 1.285l2.108.843c.441.176.748.578.748 1.05v1.82c0 .917.663 1.699 1.567 1.85l2.123.17c.55.04.95.502.95 1.06v3.103c0 .917.663 1.699 1.567 1.85l.008.001a1.5 1.5 0 0 0 1.842-1.569l-.17-2.123c-.04-.55.242-1.05.748-1.285l2.108-.843c.441-.176.748-.578.748-1.05v-1.82c0-.917-.663-1.699-1.567-1.85l-2.123-.17c-.55-.04-.95-.502-.95-1.06V3.817c0-.917-.663-1.699-1.567-1.85L12.922 1.8A1.5 1.5 0 0 0 11.078 2.25ZM12 15.75a3.75 3.75 0 1 1 0-7.5 3.75 3.75 0 0 1 0 7.5Z" clip-rule="evenodd" /></svg>
+                </button>
+                <button class="icon-btn" id="history-btn" data-i18n-title="historyBtnTitle" title="历史记录">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z" clip-rule="evenodd" /></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- 显示屏 -->
+        <div class="display">
+            <div id="display-expression"></div>
+            <div id="display-input">0</div>
+        </div>
+        
+        <!-- 按钮网格 -->
+        <div class="buttons-grid">
+            <button class="btn btn-secondary" data-value="sin("><span class="btn-symbol">sin</span><span class="btn-label" data-i18n="sinLabel">正弦</span></button>
+            <button class="btn btn-secondary" data-value="cos("><span class="btn-symbol">cos</span><span class="btn-label" data-i18n="cosLabel">余弦</span></button>
+            <button class="btn btn-secondary" data-value="tan("><span class="btn-symbol">tan</span><span class="btn-label" data-i18n="tanLabel">正切</span></button>
+            <button class="btn btn-secondary" data-value="log("><span class="btn-symbol">log</span><span class="btn-label" data-i18n="logLabel">对数</span></button>
+            <button class="btn btn-secondary" data-value="ln("><span class="btn-symbol">ln</span><span class="btn-label" data-i18n="lnLabel">自然对数</span></button>
+
+            <button class="btn btn-secondary" data-value="("><span class="btn-symbol">(</span></button>
+            <button class="btn btn-secondary" data-value=")"><span class="btn-symbol">)</span></button>
+            <button class="btn btn-secondary" data-value="^"><span class="btn-symbol">xʸ</span><span class="btn-label" data-i18n="powerLabel">乘方</span></button>
+            <button class="btn btn-secondary" data-value="sqrt("><span class="btn-symbol">√</span><span class="btn-label" data-i18n="sqrtLabel">平方根</span></button>
+            <button class="btn btn-secondary" data-value="!"><span class="btn-symbol">x!</span><span class="btn-label" data-i18n="factLabel">阶乘</span></button>
+
+            <button class="btn btn-tertiary" data-action="clear"><span class="btn-symbol">C</span></button>
+            <button class="btn btn-tertiary" data-action="backspace"><span class="btn-symbol">⌫</span></button>
+            <button class="btn btn-tertiary" data-value="%"><span class="btn-symbol">%</span></button>
+            <button class="btn btn-secondary" data-value="PI"><span class="btn-symbol">π</span><span class="btn-label" data-i18n="piLabel">圆周率</span></button>
+            <button class="btn btn-secondary" data-value="E"><span class="btn-symbol">e</span><span class="btn-label" data-i18n="eLabel">自然常数</span></button>
+            
+            <button class="btn btn-number" data-value="7"><span class="btn-symbol">7</span></button>
+            <button class="btn btn-number" data-value="8"><span class="btn-symbol">8</span></button>
+            <button class="btn btn-number" data-value="9"><span class="btn-symbol">9</span></button>
+            <button class="btn btn-operator" data-value="/"><span class="btn-symbol">÷</span></button>
+            <button class="btn btn-operator" data-value="*"><span class="btn-symbol">×</span></button>
+
+            <button class="btn btn-number" data-value="4"><span class="btn-symbol">4</span></button>
+            <button class="btn btn-number" data-value="5"><span class="btn-symbol">5</span></button>
+            <button class="btn btn-number" data-value="6"><span class="btn-symbol">6</span></button>
+            <button class="btn btn-operator" data-value="-"><span class="btn-symbol">-</span></button>
+            <button class="btn btn-operator" data-value="+"><span class="btn-symbol">+</span></button>
+
+            <button class="btn btn-number" data-value="1"><span class="btn-symbol">1</span></button>
+            <button class="btn btn-number" data-value="2"><span class="btn-symbol">2</span></button>
+            <button class="btn btn-number" data-value="3"><span class="btn-symbol">3</span></button>
+            <button class="btn btn-operator span-2" data-action="equals"><span class="btn-symbol">=</span></button>
+
+            <button class="btn btn-number span-2" data-value="0"><span class="btn-symbol">0</span></button>
+            <button class="btn btn-number" data-value="."><span class="btn-symbol">.</span></button>
+            <button class="btn btn-operator span-2" id="solve-steps-btn" data-ai-action="solve"><span class="btn-symbol" data-i18n="solveSteps">解题思路</span></button>
+        </div>
+    </div>
+
+    <!-- 通用模态框 -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <h3 class="modal-title" id="modal-title"></h3>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // --- 1. 状态、常量与国际化文本 ---
+        const state = {
+            expression: '',
+            history: [],
+            justCalculated: false,
+            currentLanguage: 'zh',
+            exchange: { from: 'CNY', to: 'USD' },
+        };
+
+        const THEMES = [
+            { id: 'sumi', color: '#4A4A4A', name: '墨' }, { id: 'sakura', color: '#FECEDC', name: '桜' },
+            { id: 'matcha', color: '#96B1A0', name: '抹茶' }, { id: 'ai', color: '#264D70', name: '藍' },
+            { id: 'yamabuki', color: '#FCA500', name: '山吹' }, { id: 'fuji', color: '#A290C4', name: '藤' },
+            { id: 'akane', color: '#B22C46', name: '茜' }, { id: 'wakatake', color: '#7BC5A3', name: '若竹' },
+            { id: 'kin', color: '#D4AF37', name: '金' }, { id: 'gin', color: '#C0C0C0', name: '銀' },
+        ];
+        
+        const CURRENCIES = [
+            { code: 'CNY', name: '人民币', flag: '🇨🇳' }, { code: 'USD', name: '美元', flag: '🇺🇸' }, { code: 'EUR', name: '欧元', flag: '🇪🇺' },
+            { code: 'JPY', name: '日元', flag: '🇯🇵' }, { code: 'GBP', name: '英镑', flag: '🇬🇧' }, { code: 'AUD', name: '澳元', flag: '🇦🇺' },
+            { code: 'CAD', name: '加元', flag: '🇨🇦' }, { code: 'CHF', name: '瑞士法郎', flag: '🇨🇭' }, { code: 'HKD', name: '港币', flag: '🇭🇰' },
+        ];
+        
+        const i18n = {
+            zh: {
+                headerTitle: '智能科学计算器', aiBtnTitle: 'AI 功能', settingsBtnTitle: '设置', historyBtnTitle: '历史记录',
+                sinLabel: '正弦', cosLabel: '余弦', tanLabel: '正切', logLabel: '对数', lnLabel: '自然对数', powerLabel: '乘方', sqrtLabel: '平方根', factLabel: '阶乘', piLabel: '圆周率', eLabel: '自然常数',
+                solveSteps: '解题思路',
+                settingsTitle: '设置', themeTitle: '选择主题', languageTitle: '选择语言',
+                historyTitle: '历史记录', clearHistory: '清空历史', noHistory: '暂无历史记录',
+                aiTitle: 'AI 智能功能', wordProblem: '文字问题求解', summarizeHistory: '总结历史', explainFormula: '公式应用',
+                exchangeRate: '汇率换算', lifeCalculations: '生活计算',
+                wordProblemTitle: '文字问题求解', wordProblemPlaceholder: '例如：一个商品原价500元，打八折后是多少钱？', solveWordProblem: '✨ 智能求解',
+                error: '错误', aiLoading: 'AI 分析中...', aiGenerating: '正在生成，请稍候...',
+                lifeCalculationsTitle: '生活计算中心', financialTools: '金融助手', healthWellness: '健康管理', dailyTools: '日常工具',
+                loanCalc: '贷款计算', tipCalc: '小费计算', discountCalc: '折扣计算', taxCalc: '个税计算', 
+                bmiCalc: 'BMI健康指数', calorieCalc: '卡路里消耗',
+                fuelCalc: '油耗计算', unitConversion: '单位换算', electricityBill: '电费计算', powerCalc: '功率计算',
+                exchangeRateTitle: '汇率换算', from: '从', to: '到', amount: '金额', convert: '换算', result: '结果',
+                calculate: '计算',
+                promptSolveSteps: "请用简体中文，以清晰、分步的方式解释如何计算以下数学表达式，并给出最终答案。表达式为：'{expression}'",
+                promptSummarize: '请用简体中文总结以下计算历史。分析计算的类型，并以清晰的列表形式呈现。历史记录为： "{history}"',
+                promptExplain: '请用简体中文，简洁地解释一下数学公式 "{expression}" 在现实世界中的一个典型应用场景。',
+                promptWordProblem: '请从以下中文文字问题中，提取出用于计算的数学表达式。请只返回表达式，不要包含任何其他文字或解释。例如，对于问题“一个商品原价500元，打八折后是多少钱？”，应返回“500 * 0.8”。问题是：“{problem}”',
+                promptExchangeRate: "将 {amount} {from} 转换为 {to}。请只提供最终的数字结果，不要包含任何货币符号或文字。",
+            },
+            en: {
+                headerTitle: 'Smart Calculator', aiBtnTitle: 'AI Features', settingsBtnTitle: 'Settings', historyBtnTitle: 'History',
+                sinLabel: 'Sine', cosLabel: 'Cosine', tanLabel: 'Tangent', logLabel: 'Log', lnLabel: 'ln', powerLabel: 'Power', sqrtLabel: 'Sqrt', factLabel: 'Factorial', piLabel: 'Pi', eLabel: 'Euler\'s',
+                solveSteps: 'Solve Steps',
+                settingsTitle: 'Settings', themeTitle: 'Select Theme', languageTitle: 'Select Language',
+                historyTitle: 'History', clearHistory: 'Clear History', noHistory: 'No history yet',
+                aiTitle: 'AI Smart Features', wordProblem: 'Solve Word Problem', summarizeHistory: 'Summarize History', explainFormula: 'Explain Formula',
+                exchangeRate: 'Exchange Rate', lifeCalculations: 'Life Calculations',
+                wordProblemTitle: 'Word Problem Solver', wordProblemPlaceholder: 'e.g., A product costs 500, what is the price after a 20% discount?', solveWordProblem: '✨ Smart Solve',
+                error: 'Error', aiLoading: 'AI Analyzing...', aiGenerating: 'Generating, please wait...',
+                lifeCalculationsTitle: 'Life Calculation Center', financialTools: 'Financial Tools', healthWellness: 'Health & Wellness', dailyTools: 'Daily Tools',
+                loanCalc: 'Loan Calc', tipCalc: 'Tip Calc', discountCalc: 'Discount Calc', taxCalc: 'Tax Calc', 
+                bmiCalc: 'BMI Health', calorieCalc: 'Calorie Burn',
+                fuelCalc: 'Fuel Cost', unitConversion: 'Unit Converter', electricityBill: 'Electricity Bill', powerCalc: 'Power Calc',
+                exchangeRateTitle: 'Exchange Rate', from: 'From', to: 'To', amount: 'Amount', convert: 'Convert', result: 'Result',
+                calculate: 'Calculate',
+                promptSolveSteps: "Please explain in English, in a clear, step-by-step manner, how to calculate the following mathematical expression and provide the final answer. The expression is: '{expression}'",
+                promptSummarize: 'Please summarize the following calculation history in English. Analyze the types of calculations and present them in a clear list format. The history is: "{history}"',
+                promptExplain: 'Please briefly explain in English a typical real-world application scenario for the mathematical formula "{expression}".',
+                promptWordProblem: 'From the following English word problem, extract the mathematical expression for calculation. Please return only the expression, without any other text or explanation. For example, for the problem "A product costs 500, what is the price after a 20% discount?", you should return "500 * 0.8". The problem is: "{problem}"',
+                promptExchangeRate: "Convert {amount} {from} to {to}. Please provide only the final numerical result, without any currency symbols or text.",
+            },
+            ja: {
+                headerTitle: 'スマート電卓', aiBtnTitle: 'AI機能', settingsBtnTitle: '設定', historyBtnTitle: '履歴',
+                sinLabel: '正弦', cosLabel: '余弦', tanLabel: '正接', logLabel: '対数', lnLabel: '自然対数', powerLabel: 'べき乗', sqrtLabel: '平方根', factLabel: '階乗', piLabel: '円周率', eLabel: 'ネイピア数',
+                solveSteps: '解法',
+                settingsTitle: '設定', themeTitle: 'テーマ選択', languageTitle: '言語選択',
+                historyTitle: '計算履歴', clearHistory: '履歴を消去', noHistory: '履歴はありません',
+                aiTitle: 'AIスマート機能', wordProblem: '文章問題解決', summarizeHistory: '履歴の要約', explainFormula: '式の応用',
+                exchangeRate: '為替レート', lifeCalculations: '生活計算',
+                wordProblemTitle: '文章問題解決', wordProblemPlaceholder: '例：ある商品の定価は500円で、2割引ならいくらですか？', solveWordProblem: '✨ スマート解決',
+                error: 'エラー', aiLoading: 'AI分析中...', aiGenerating: '生成中です、お待ちください...',
+                lifeCalculationsTitle: '生活計算センター', financialTools: '金融ツール', healthWellness: '健康管理', dailyTools: '日常ツール',
+                loanCalc: 'ローン計算', tipCalc: 'チップ計算', discountCalc: '割引計算', taxCalc: '所得税計算', 
+                bmiCalc: 'BMI健康指数', calorieCalc: 'カロリー消費',
+                fuelCalc: '燃費計算', unitConversion: '単位変換', electricityBill: '電気代計算', powerCalc: '電力計算',
+                exchangeRateTitle: '為替レート', from: 'から', to: 'へ', amount: '金額', convert: '換算', result: '結果',
+                calculate: '計算',
+                promptSolveSteps: "日本語で、以下の数式を計算する方法を明確に、ステップバイステップで説明し、最終的な答えを提示してください。数式は次のとおりです：'{expression}'",
+                promptSummarize: '日本語で、以下の計算履歴を要約してください。計算の種類を分析し、明確なリスト形式で提示してください。履歴は次のとおりです："{history}"',
+                promptExplain: '日本語で、数式「{expression}」の現実世界での典型的な応用シナリオを簡潔に説明してください。',
+                promptWordProblem: '以下の日本語の文章問題から、計算用の数式を抽出してください。数式のみを返し、他のテキストや説明は含めないでください。例えば、「ある商品の定価は500円で、2割引ならいくらですか？」という問題の場合、「500 * 0.8」を返すべきです。問題は：「{problem}」',
+                promptExchangeRate: "{amount} {from} を {to} に変換してください。最終的な数値結果のみを提供し、通貨記号やテキストは含めないでください。",
+            }
+        };
+
+        // --- 2. DOM 元素获取 ---
+        const dom = {
+            displayInput: document.getElementById('display-input'),
+            buttonsGrid: document.querySelector('.buttons-grid'),
+            aiBtn: document.getElementById('ai-btn'),
+            settingsBtn: document.getElementById('settings-btn'),
+            historyBtn: document.getElementById('history-btn'),
+            modal: document.getElementById('modal'),
+            modalTitle: document.getElementById('modal-title'),
+            modalBody: document.getElementById('modal-body'),
+        };
+
+        // --- 3. UI 更新与渲染 ---
+        function updateDisplay() {
+            dom.displayInput.textContent = state.expression.replace(/\*/g, '×').replace(/\//g, '÷') || '0';
+        }
+
+        function openModal(title, bodyContent) {
+            dom.modalTitle.innerHTML = title;
+            dom.modalBody.innerHTML = bodyContent;
+            dom.modal.classList.add('visible');
+        }
+        
+        function setLanguage(lang) {
+            if (!i18n[lang]) return;
+            state.currentLanguage = lang;
+            const t = i18n[lang];
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (t[key]) el.textContent = t[key];
+            });
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                 const key = el.dataset.i18nTitle;
+                 if(t[key]) el.title = t[key];
+            });
+        }
+
+        function renderAiMenu() {
+            const t = i18n[state.currentLanguage];
+            const menuHtml = `
+                <div class="ai-menu">
+                    <button class="ai-menu-btn" data-ai-action="exchangeRate">💱 ${t.exchangeRate}</button>
+                    <button class="ai-menu-btn" data-ai-action="lifeCalculations">🏠 ${t.lifeCalculations}</button>
+                    <button class="ai-menu-btn" data-ai-action="wordProblem">✍️ ${t.wordProblem}</button>
+                    <button class="ai-menu-btn" data-ai-action="summarize">📊 ${t.summarizeHistory}</button>
+                    <button class="ai-menu-btn" data-ai-action="explain">🌍 ${t.explainFormula}</button>
+                </div>
+            `;
+            openModal(t.aiTitle, menuHtml);
+        }
+
+        function renderHistory() {
+            const t = i18n[state.currentLanguage];
+            let historyHtml = '<div id="history-modal-body">';
+            if (state.history.length === 0) {
+                historyHtml += `<p>${t.noHistory}</p>`;
+            } else {
+                state.history.forEach(item => {
+                    historyHtml += `<div class="history-item"><div class="expression">${item.expression.replace(/\*/g, '×').replace(/\//g, '÷')} =</div><div class="result">${item.result}</div></div>`;
+                });
+            }
+            historyHtml += `</div><button id="clear-history-btn" class="primary-btn">${t.clearHistory}</button>`;
+            openModal(t.historyTitle, historyHtml);
+        }
+
+        function renderWordProblemSolver() {
+            const t = i18n[state.currentLanguage];
+            const solverHtml = `
+                <textarea id="word-problem-textarea" placeholder="${t.wordProblemPlaceholder}"></textarea>
+                <button id="solve-word-problem-btn" class="primary-btn">${t.solveWordProblem}</button>
+            `;
+            openModal(t.wordProblemTitle, solverHtml);
+        }
+        
+        function renderSettingsModal() {
+            const t = i18n[state.currentLanguage];
+            const settingsHtml = `
+                <div class="settings-section">
+                    <h4 class="settings-title">${t.themeTitle}</h4>
+                    <div id="theme-palette-container">${getThemePaletteHtml()}</div>
+                </div>
+                <div class="settings-section">
+                    <h4 class="settings-title">${t.languageTitle}</h4>
+                    <div class="language-options">${getLanguageOptionsHtml()}</div>
+                </div>
+            `;
+            openModal(t.settingsTitle, settingsHtml);
+        }
+
+        function getThemePaletteHtml() {
+            let paletteHtml = '';
+            THEMES.forEach(theme => {
+                const isActive = document.documentElement.dataset.theme === theme.id ? 'active' : '';
+                paletteHtml += `<div class="theme-item ${isActive}" data-theme-id="${theme.id}"><div class="theme-color-circle" style="background-color: ${theme.color};"></div><span class="theme-name">${theme.name}</span></div>`;
+            });
+            return paletteHtml;
+        }
+
+        function getLanguageOptionsHtml() {
+            const languages = [{code: 'zh', name: '中文', flag: '🇨🇳'}, {code: 'en', name: 'English', flag: '🇬🇧'}, {code: 'ja', name: '日本語', flag: '🇯🇵'}];
+            let langHtml = '';
+            languages.forEach(lang => {
+                const isActive = state.currentLanguage === lang.code ? 'active' : '';
+                langHtml += `<button class="lang-btn ${isActive}" data-lang="${lang.code}"><div class="flag">${lang.flag}</div><div class="name">${lang.name}</div></button>`;
+            });
+            return langHtml;
+        }
+        
+        function renderLifeCalculationsMenu() {
+            const t = i18n[state.currentLanguage];
+            const menuHtml = `
+                <div class="calc-section">
+                    <h4 class="calc-title">${t.financialTools}</h4>
+                    <div class="life-calc-menu">
+                        <button class="life-calc-btn" data-life-calc="loan">💰 ${t.loanCalc}</button>
+                        <button class="life-calc-btn" data-life-calc="tip">🪙 ${t.tipCalc}</button>
+                        <button class="life-calc-btn" data-life-calc="discount">🛍️ ${t.discountCalc}</button>
+                        <button class="life-calc-btn" data-life-calc="tax">🧾 ${t.taxCalc}</button>
+                    </div>
+                </div>
+                <div class="calc-section">
+                    <h4 class="calc-title">${t.healthWellness}</h4>
+                    <div class="life-calc-menu">
+                        <button class="life-calc-btn" data-life-calc="bmi">❤️ ${t.bmiCalc}</button>
+                        <button class="life-calc-btn" data-life-calc="calorie">🔥 ${t.calorieCalc}</button>
+                    </div>
+                </div>
+                <div class="calc-section">
+                    <h4 class="calc-title">${t.dailyTools}</h4>
+                    <div class="life-calc-menu">
+                        <button class="life-calc-btn" data-life-calc="fuel">⛽️ ${t.fuelCalc}</button>
+                        <button class="life-calc-btn" data-life-calc="unit">📏 ${t.unitConversion}</button>
+                        <button class="life-calc-btn" data-life-calc="electricity">💡 ${t.electricityBill}</button>
+                        <button class="life-calc-btn" data-life-calc="power">⚡️ ${t.powerCalc}</button>
+                    </div>
+                </div>
+            `;
+            openModal(t.lifeCalculationsTitle, menuHtml);
+        }
+
+        function renderExchangeRateConverter() {
+            const t = i18n[state.currentLanguage];
+            const fromCurrency = CURRENCIES.find(c => c.code === state.exchange.from);
+            const toCurrency = CURRENCIES.find(c => c.code === state.exchange.to);
+            const converterHtml = `
+                <div class="exchange-rate-ui">
+                    <div class="currency-selection">
+                        <div class="currency-box">
+                            <div class="label">${t.from}</div>
+                            <button class="currency-button" id="from-currency-btn" data-currency-type="from">
+                                <span class="flag">${fromCurrency.flag}</span>
+                                <span class="code">${fromCurrency.code}</span>
+                            </button>
+                        </div>
+                        <button id="swap-currency-btn">⇆</button>
+                        <div class="currency-box">
+                            <div class="label">${t.to}</div>
+                            <button class="currency-button" id="to-currency-btn" data-currency-type="to">
+                                <span class="flag">${toCurrency.flag}</span>
+                                <span class="code">${toCurrency.code}</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="currency-grid-container" style="display: none;"></div>
+                    <div class="form-group">
+                        <label for="amount-to-convert">${t.amount}</label>
+                        <input type="number" id="amount-to-convert" value="100">
+                    </div>
+                    <button id="convert-rate-btn" class="primary-btn">${t.convert}</button>
+                    <div id="exchange-result-container" class="calc-result" style="display: none;"></div>
+                </div>
+            `;
+            openModal(t.exchangeRateTitle, converterHtml);
+        }
+        
+        function renderCurrencyGrid(type) {
+            const t = i18n[state.currentLanguage];
+            const gridContainer = document.getElementById('currency-grid-container');
+            let gridHtml = `<h4 class="settings-title">${type === 'from' ? t.from : t.to}</h4><div class="currency-grid">`;
+            CURRENCIES.forEach(c => {
+                gridHtml += `
+                    <button class="currency-grid-btn" data-currency-code="${c.code}" data-currency-flag="${c.flag}">
+                        <span class="flag">${c.flag}</span>
+                        <span class="code">${c.code}</span>
+                    </button>
+                `;
+            });
+            gridHtml += '</div>';
+            gridContainer.innerHTML = gridHtml;
+            gridContainer.style.display = 'block';
+        }
+
+        function renderCalculatorUI(type) {
+            const t = i18n[state.currentLanguage];
+            let title, body;
+            const i18n_calc = {
+                loan: { title: t.loanCalc, body: `<div class="form-group"><label>贷款总额</label><input type="number" id="loan-amount" placeholder="100000"></div><div class="form-group"><label>年利率 (%)</label><input type="number" id="loan-rate" placeholder="4.9"></div><div class="form-group"><label>贷款期限 (年)</label><input type="number" id="loan-years" placeholder="30"></div><button id="calculate-${type}-btn" class="primary-btn">${t.calculate}</button><div id="calc-result-container" class="calc-result" style="display: none;"></div>` },
+                tip: { title: t.tipCalc, body: `<div class="form-group"><label>账单金额</label><input type="number" id="bill-amount" placeholder="100"></div><div class="form-group"><label>小费比例 (%)</label><input type="number" id="tip-percent" placeholder="15"></div><button id="calculate-${type}-btn" class="primary-btn">${t.calculate}</button><div id="calc-result-container" class="calc-result" style="display: none;"></div>` },
+                discount: { title: t.discountCalc, body: `<div class="form-group"><label>原价</label><input type="number" id="original-price" placeholder="200"></div><div class="form-group"><label>折扣 (%)</label><input type="number" id="discount-percent" placeholder="20"></div><button id="calculate-${type}-btn" class="primary-btn">${t.calculate}</button><div id="calc-result-container" class="calc-result" style="display: none;"></div>` },
+                tax: { title: t.taxCalc, body: `<div class="form-group"><label>月收入</label><input type="number" id="income" placeholder="10000"></div><button id="calculate-${type}-btn" class="primary-btn">${t.calculate}</button><div id="calc-result-container" class="calc-result" style="display: none;"></div>` },
+                bmi: { title: t.bmiCalc, body: `<div class="form-group"><label>身高 (cm)</label><input type="number" id="height" placeholder="175"></div><div class="form-group"><label>体重 (kg)</label><input type="number" id="weight" placeholder="70"></div><button id="calculate-${type}-btn" class="primary-btn">${t.calculate}</button><div id="calc-result-container" class="calc-result" style="display: none;"></div>` },
+                calorie: { title: t.calorieCalc, body: `<div class="form-group"><label>运动类型</label><select id="activity-type"><option value="3.5">步行</option><option value="7">跑步</option><option value="8">游泳</option><option value="6">骑行</option></select></div><div class="form-group"><label>体重 (kg)</label><input type="number" id="calorie-weight" placeholder="70"></div><div class="form-group"><label>时长 (分钟)</label><input type="number" id="duration" placeholder="30"></div><button id="calculate-${type}-btn" class="primary-btn">${t.calculate}</button><div id="calc-result-container" class="calc-result" style="display: none;"></div>` },
+                fuel: { title: t.fuelCalc, body: `<div class="form-group"><label>行驶里程 (km)</label><input type="number" id="distance" placeholder="100"></div><div class="form-group"><label>百公里油耗 (L/100km)</label><input type="number" id="fuel-consumption" placeholder="8"></div><div class="form-group"><label>油价 (元/L)</label><input type="number" id="fuel-price" placeholder="7.5"></div><button id="calculate-${type}-btn" class="primary-btn">${t.calculate}</button><div id="calc-result-container" class="calc-result" style="display: none;"></div>` },
+                electricity: { title: t.electricityBill, body: `<div class="form-group"><label>用电量 (kWh)</label><input type="number" id="consumption" placeholder="300"></div><div class="form-group"><label>电价 (元/度)</label><input type="number" id="price" placeholder="0.52"></div><button id="calculate-${type}-btn" class="primary-btn">${t.calculate}</button><div id="calc-result-container" class="calc-result" style="display: none;"></div>` },
+                power: { title: t.powerCalc, body: `<div class="form-group"><label>电压 (V)</label><input type="number" id="voltage" placeholder="220"></div><div class="form-group"><label>电流 (A)</label><input type="number" id="current" placeholder="0.5"></div><button id="calculate-${type}-btn" class="primary-btn">${t.calculate}</button><div id="calc-result-container" class="calc-result" style="display: none;"></div>` },
+                unit: { title: t.unitConversion, body: `<div class="life-calc-menu"><button class="life-calc-btn" data-unit-type="length">📏 ${t.length || 'Length'}</button><button class="life-calc-btn" data-unit-type="weight">⚖️ ${t.weightUnit || 'Weight'}</button><button class="life-calc-btn" data-unit-type="temperature">🌡️ ${t.temperature || 'Temperature'}</button></div>` }
+            };
+            
+            if (i18n_calc[type]) {
+                openModal(i18n_calc[type].title, i18n_calc[type].body);
+            }
+        }
+        
+        function renderUnitConverterUI(unitType) {
+            const t = i18n[state.currentLanguage];
+            let title, options, defaultFrom, defaultTo;
+            const i18n_units = {
+                length: { title: t.length, options: { 'm': 'Meter', 'km': 'Kilometer', 'cm': 'Centimeter', 'mm': 'Millimeter', 'mi': 'Mile', 'ft': 'Foot', 'in': 'Inch' }, from: 'm', to: 'ft' },
+                weight: { title: t.weightUnit, options: { 'kg': 'Kilogram', 'g': 'Gram', 'lb': 'Pound', 'oz': 'Ounce' }, from: 'kg', to: 'lb' },
+                temperature: { title: t.temperature, options: { 'c': 'Celsius', 'f': 'Fahrenheit', 'k': 'Kelvin' }, from: 'c', to: 'f' }
+            };
+            
+            const unitData = i18n_units[unitType];
+            if (!unitData) return;
+
+            let optionsHtml = '';
+            for(const key in unitData.options) {
+                optionsHtml += `<option value="${key}">${unitData.options[key]}</option>`;
+            }
+
+            const body = `
+                <div class="form-group">
+                    <input type="number" id="unit-input" value="1">
+                </div>
+                <div class="currency-selection" style="margin-bottom: 1rem;">
+                    <select id="from-unit" class="form-group">${optionsHtml}</select>
+                    <button id="swap-units-btn" class="btn btn-tertiary">⇆</button>
+                    <select id="to-unit" class="form-group">${optionsHtml}</select>
+                </div>
+                <button id="convert-unit-btn" class="primary-btn">${t.convert}</button>
+                <div id="calc-result-container" class="calc-result" style="display: none;"></div>
+            `;
+            openModal(unitData.title, body);
+            document.getElementById('from-unit').value = unitData.from;
+            document.getElementById('to-unit').value = unitData.to;
+        }
+
+
+        // --- 4. 核心逻辑 ---
+        function handleButtonPress(e) {
+            const target = e.target.closest('.btn');
+            if (!target) return;
+            const { value, action, aiAction } = target.dataset;
+            if (action) handleAction(action);
+            else if (value) handleInput(value);
+            else if (aiAction) handleAiAction(aiAction);
+        }
+
+        function handleInput(char) {
+            if (state.justCalculated && '0123456789.PIE'.includes(char)) {
+                state.expression = '';
+            }
+            state.justCalculated = false;
+            if (state.expression === '0' && char !== '.') state.expression = char;
+            else state.expression += char;
+            updateDisplay();
+        }
+
+        function handleAction(action) {
+            switch (action) {
+                case 'clear': state.expression = ''; state.justCalculated = false; break;
+                case 'backspace':
+                    if (state.justCalculated) state.expression = '';
+                    else state.expression = state.expression.slice(0, -1);
+                    state.justCalculated = false;
+                    break;
+                case 'equals': calculate(); break;
+            }
+            updateDisplay();
+        }
+
+        function calculate() {
+            if (!state.expression) return;
+            const t = i18n[state.currentLanguage];
+            try {
+                const evalExpression = state.expression.replace(/PI/g, 'pi').replace(/E/g, 'e');
+                const result = math.evaluate(evalExpression);
+                const formattedResult = parseFloat(result.toPrecision(12));
+                state.history.push({ expression: state.expression, result: formattedResult });
+                if (state.history.length > 50) state.history.shift();
+                state.expression = String(formattedResult);
+                state.justCalculated = true;
+                dom.displayInput.classList.add('highlight');
+                dom.displayInput.addEventListener('animationend', () => dom.displayInput.classList.remove('highlight'), { once: true });
+            } catch (err) {
+                state.expression = t.error;
+                state.justCalculated = true;
+            }
+            updateDisplay();
+        }
+
+        // --- 5. Gemini API 功能 ---
+        async function callGeminiAPI(prompt) {
+            const t = i18n[state.currentLanguage];
+            const resultContainer = document.getElementById('exchange-result-container');
+            if(resultContainer) {
+                 resultContainer.style.display = 'block';
+                 resultContainer.innerHTML = `<div class="label">${t.aiGenerating}</div>`;
+            } else {
+                openModal(t.aiLoading, t.aiGenerating);
+            }
+            
+            try {
+                const apiKey = ""; // Provided by environment
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+                if (!response.ok) throw new Error(`API Request Failed: ${response.status}`);
+                const result = await response.json();
+                const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) return text;
+                else throw new Error("Invalid API response format.");
+            } catch (e) {
+                return `${t.error}: ${e.message}`;
+            }
+        }
+        
+        function formatApiResponse(text) {
+            return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br />');
+        }
+
+        async function handleAiAction(action) {
+            const t = i18n[state.currentLanguage];
+            let prompt, title;
+            switch (action) {
+                case 'exchangeRate': renderExchangeRateConverter(); return;
+                case 'lifeCalculations': renderLifeCalculationsMenu(); return;
+                case 'solve':
+                    if (!state.expression || state.expression === t.error) { openModal(t.error, '请输入一个算式来获取解题思路。'); return; }
+                    title = t.solveSteps;
+                    prompt = t.promptSolveSteps.replace('{expression}', state.expression);
+                    break;
+                case 'summarize':
+                    if (state.history.length === 0) { openModal(t.error, '没有历史记录可供总结。'); return; }
+                    title = t.summarizeHistory;
+                    const historyString = state.history.map(item => `${item.expression} = ${item.result}`).join('; ');
+                    prompt = t.promptSummarize.replace('{history}', historyString);
+                    break;
+                case 'explain':
+                    if (!state.expression || !isNaN(parseFloat(state.expression))) { openModal(t.error, '请输入一个有效的公式来分析其用途。'); return; }
+                    title = t.explainFormula;
+                    prompt = t.promptExplain.replace('{expression}', state.expression);
+                    break;
+                case 'wordProblem':
+                    renderWordProblemSolver();
+                    return;
+                default: return;
+            }
+            const result = await callGeminiAPI(prompt);
+            openModal(title, formatApiResponse(result));
+        }
+
+        async function handleWordProblem() {
+            const t = i18n[state.currentLanguage];
+            const problemText = document.getElementById('word-problem-textarea').value;
+            if (!problemText) { openModal(t.error, '请输入文字问题。'); return; }
+            const prompt = t.promptWordProblem.replace('{problem}', problemText);
+            const expressionResult = await callGeminiAPI(prompt);
+            if (expressionResult.startsWith(t.error)) { openModal('AI 分析错误', expressionResult); } 
+            else {
+                state.expression = expressionResult.trim();
+                calculate();
+                dom.modal.classList.remove('visible');
+            }
+        }
+        
+        async function handleExchangeRateConversion() {
+            const t = i18n[state.currentLanguage];
+            const amount = document.getElementById('amount-to-convert').value;
+            const resultContainer = document.getElementById('exchange-result-container');
+
+            if (!amount || amount <= 0) {
+                resultContainer.style.display = 'block';
+                resultContainer.innerHTML = `<div class="value">${t.error}</div><div class="label">Please enter a valid amount.</div>`;
+                return;
+            }
+
+            const prompt = t.promptExchangeRate.replace('{amount}', amount).replace('{from}', state.exchange.from).replace('{to}', state.exchange.to);
+            const result = await callGeminiAPI(prompt);
+            
+            const convertedValue = parseFloat(result);
+            if (!isNaN(convertedValue)) {
+                resultContainer.innerHTML = `<div class="label">${amount} ${state.exchange.from} ≈</div><div class="value">${convertedValue.toFixed(2)} ${state.exchange.to}</div>`;
+            } else {
+                resultContainer.innerHTML = `<div class="value">${t.error}</div><div class="label">${result}</div>`;
+            }
+            resultContainer.style.display = 'block';
+        }
+
+        // --- 6. 事件监听器 ---
+        dom.buttonsGrid.addEventListener('click', handleButtonPress);
+        dom.aiBtn.addEventListener('click', renderAiMenu);
+        dom.settingsBtn.addEventListener('click', renderSettingsModal);
+        dom.historyBtn.addEventListener('click', renderHistory);
+
+        dom.modal.addEventListener('click', (e) => {
+            const target = e.target.closest('button');
+            if (!target && !e.target.closest('.theme-item')) return;
+            const el = target || e.target.closest('.theme-item');
+
+            // 通用关闭
+            if (el.closest('.modal-close-btn')) { dom.modal.classList.remove('visible'); return; }
+            
+            // AI 菜单
+            if (el.dataset.aiAction) { handleAiAction(el.dataset.aiAction); return; }
+            
+            // 设置
+            if (el.dataset.themeId) {
+                document.documentElement.dataset.theme = el.dataset.themeId;
+                renderSettingsModal();
+                return;
+            }
+            if (el.dataset.lang) {
+                setLanguage(el.dataset.lang);
+                renderSettingsModal();
+                return;
+            }
+            
+            // 历史与文字问题
+            if (el.id === 'clear-history-btn') { state.history = []; renderHistory(); return; }
+            if (el.id === 'solve-word-problem-btn') { handleWordProblem(); return; }
+            
+            // 生活计算
+            if (el.dataset.lifeCalc) { renderCalculatorUI(el.dataset.lifeCalc); return; }
+            if (el.dataset.unitType) { renderUnitConverterUI(el.dataset.unitType); return; }
+
+            // 汇率换算
+            if (el.id === 'from-currency-btn' || el.id === 'to-currency-btn') { renderCurrencyGrid(el.dataset.currencyType); return; }
+            if (el.dataset.currencyCode) {
+                const type = document.querySelector('#currency-grid-container .settings-title').textContent === i18n[state.currentLanguage].from ? 'from' : 'to';
+                state.exchange[type] = el.dataset.currencyCode;
+                renderExchangeRateConverter();
+                return;
+            }
+            if (el.id === 'swap-currency-btn') {
+                [state.exchange.from, state.exchange.to] = [state.exchange.to, state.exchange.from];
+                renderExchangeRateConverter();
+                return;
+            }
+            if(el.id === 'convert-rate-btn') { handleExchangeRateConversion(); return; }
+
+            // 具体计算器逻辑
+            const resultContainer = document.getElementById('calc-result-container');
+            if (!resultContainer) return;
+            
+            let resultHtml = '';
+            try {
+                switch(el.id) {
+                    case 'calculate-loan-btn':
+                        const amount = parseFloat(document.getElementById('loan-amount').value);
+                        const rate = parseFloat(document.getElementById('loan-rate').value) / 100 / 12;
+                        const years = parseFloat(document.getElementById('loan-years').value) * 12;
+                        if(amount > 0 && rate > 0 && years > 0) {
+                            const monthlyPayment = (amount * rate * Math.pow(1 + rate, years)) / (Math.pow(1 + rate, years) - 1);
+                            const totalPayment = monthlyPayment * years;
+                            resultHtml = `<div class="label">月供</div><div class="value">${monthlyPayment.toFixed(2)}</div><div class="label" style="margin-top: 0.5rem;">总利息</div><div class="value">${(totalPayment - amount).toFixed(2)}</div>`;
+                        }
+                        break;
+                    case 'calculate-tip-btn':
+                        const bill = parseFloat(document.getElementById('bill-amount').value);
+                        const percent = parseFloat(document.getElementById('tip-percent').value);
+                        if(bill > 0 && percent >= 0) {
+                             const tip = bill * (percent / 100);
+                             const total = bill + tip;
+                             resultHtml = `<div class="label">小费</div><div class="value">${tip.toFixed(2)}</div><div class="label" style="margin-top: 0.5rem;">总计</div><div class="value">${total.toFixed(2)}</div>`;
+                        }
+                        break;
+                    case 'calculate-discount-btn':
+                        const price = parseFloat(document.getElementById('original-price').value);
+                        const discount = parseFloat(document.getElementById('discount-percent').value);
+                        if(price > 0 && discount >= 0) {
+                            const saved = price * (discount / 100);
+                            const finalPrice = price - saved;
+                            resultHtml = `<div class="label">节省</div><div class="value">${saved.toFixed(2)}</div><div class="label" style="margin-top: 0.5rem;">折后价</div><div class="value">${finalPrice.toFixed(2)}</div>`;
+                        }
+                        break;
+                    case 'calculate-tax-btn':
+                        const income = parseFloat(document.getElementById('income').value);
+                        if(!isNaN(income)) {
+                            const tax = Math.max(0, (income - 5000) * 0.03).toFixed(2); // Simplified
+                            resultHtml = `<div class="label">应缴税款</div><div class="value">${tax}</div>`;
+                        }
+                        break;
+                    case 'calculate-bmi-btn':
+                        const height = parseFloat(document.getElementById('height').value) / 100;
+                        const weight = parseFloat(document.getElementById('weight').value);
+                        if(height > 0 && weight > 0) {
+                            const bmi = (weight / (height * height)).toFixed(1);
+                            resultHtml = `<div class="label">BMI指数</div><div class="value">${bmi}</div>`;
+                        }
+                        break;
+                    case 'calculate-calorie-btn':
+                        const activity = parseFloat(document.getElementById('activity-type').value);
+                        const calWeight = parseFloat(document.getElementById('calorie-weight').value);
+                        const duration = parseFloat(document.getElementById('duration').value);
+                        if(activity > 0 && calWeight > 0 && duration > 0) {
+                             const calories = (activity * 3.5 * calWeight / 200 * duration).toFixed(0);
+                             resultHtml = `<div class="label">消耗热量</div><div class="value">${calories} kcal</div>`;
+                        }
+                        break;
+                    case 'calculate-fuel-btn':
+                         const distance = parseFloat(document.getElementById('distance').value);
+                         const consumption = parseFloat(document.getElementById('fuel-consumption').value);
+                         const fuelPrice = parseFloat(document.getElementById('fuel-price').value);
+                         if(distance > 0 && consumption > 0 && fuelPrice > 0) {
+                             const cost = (distance / 100 * consumption * fuelPrice).toFixed(2);
+                             resultHtml = `<div class="label">总花费</div><div class="value">${cost}</div>`;
+                         }
+                         break;
+                    case 'calculate-electricity-btn':
+                        const elecConsumption = parseFloat(document.getElementById('consumption').value);
+                        const elecPrice = parseFloat(document.getElementById('price').value);
+                        if(!isNaN(elecConsumption) && !isNaN(elecPrice)) {
+                            resultHtml = `<div class="label">总电费</div><div class="value">${(elecConsumption * elecPrice).toFixed(2)}</div>`;
+                        }
+                        break;
+                    case 'calculate-power-btn':
+                        const voltage = parseFloat(document.getElementById('voltage').value);
+                        const current = parseFloat(document.getElementById('current').value);
+                        if(!isNaN(voltage) && !isNaN(current)) {
+                            resultHtml = `<div class="label">功率</div><div class="value">${(voltage * current).toFixed(2)} W</div>`;
+                        }
+                        break;
+                    case 'convert-unit-btn':
+                         const input = parseFloat(document.getElementById('unit-input').value);
+                         const from = document.getElementById('from-unit').value;
+                         const to = document.getElementById('to-unit').value;
+                         if(!isNaN(input)) {
+                             const result = math.unit(input, from).to(to).toNumber().toFixed(3);
+                             resultHtml = `<div class="value">${result} ${to}</div>`;
+                         }
+                         break;
+                    case 'swap-units-btn':
+                        const fromSelect = document.getElementById('from-unit');
+                        const toSelect = document.getElementById('to-unit');
+                        [fromSelect.value, toSelect.value] = [toSelect.value, fromSelect.value];
+                        return;
+                }
+                if (resultHtml) {
+                    resultContainer.innerHTML = resultHtml;
+                    resultContainer.style.display = 'block';
+                }
+            } catch(err) {
+                resultContainer.innerHTML = `<div class="value">${i18n[state.currentLanguage].error}</div>`;
+                resultContainer.style.display = 'block';
+            }
+        });
+
+        // --- 7. 初始化 ---
+        updateDisplay();
+        setLanguage('zh');
+    </script>
+</body>
+</html>
